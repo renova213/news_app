@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app_clean_architecture/features/daily_news/presentation/bloc/article/remote/remote_article_bloc.dart';
+import 'package:news_app_clean_architecture/features/daily_news/presentation/pages/article_detail/article_detail_page.dart';
+import 'package:news_app_clean_architecture/features/daily_news/presentation/pages/article_save/article_save_page.dart';
 import 'package:news_app_clean_architecture/features/daily_news/presentation/widgets/article_widget.dart';
 
 class DailyNewsPage extends StatefulWidget {
@@ -16,10 +18,8 @@ class _DailyNewsPageState extends State<DailyNewsPage> {
   void initState() {
     super.initState();
 
-    Future.microtask(
-      () async => BlocProvider.of<RemoteArticleBloc>(context)
-          .add(const GetArticle("general", "us")),
-    );
+    BlocProvider.of<RemoteArticleBloc>(context)
+        .add(const GetArticle(category: "general", country: "us"));
   }
 
   @override
@@ -28,7 +28,18 @@ class _DailyNewsPageState extends State<DailyNewsPage> {
   }
 
   AppBar _buildAppBar() {
-    return AppBar(centerTitle: true, title: const Text("Daily News"));
+    return AppBar(
+      centerTitle: true,
+      title: const Text("Daily News"),
+      actions: [
+        IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ArticleSavePage()));
+            },
+            icon: const Icon(Icons.bookmark))
+      ],
+    );
   }
 
   Padding _buildBody() {
@@ -46,10 +57,17 @@ class _DailyNewsPageState extends State<DailyNewsPage> {
             return ListView.separated(
                 separatorBuilder: (context, _) => const SizedBox(height: 16),
                 itemBuilder: (context, index) {
-                  final data = state.articles![index];
-                  return ArticleWidget(article: data);
+                  final data = state.articles[index];
+
+                  return GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    ArticleDetailPage(article: data)),
+                          ),
+                      child: ArticleWidget(article: data));
                 },
-                itemCount: state.articles!.length);
+                itemCount: state.articles.length);
           }
           return const SizedBox();
         },

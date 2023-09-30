@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 class ArticleEntity extends Equatable {
-  final int id;
   final String author;
   final String title;
   final String description;
@@ -11,8 +10,7 @@ class ArticleEntity extends Equatable {
   final String content;
 
   const ArticleEntity(
-      {required this.id,
-      required this.author,
+      {required this.author,
       required this.title,
       required this.description,
       required this.url,
@@ -22,5 +20,5 @@ class ArticleEntity extends Equatable {
 
   @override
   List<Object?> get props =>
-      [id, author, title, description, url, content, publishedAt, url];
+      [author, title, description, url, content, publishedAt, url];
 }
